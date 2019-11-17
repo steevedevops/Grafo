@@ -31,13 +31,12 @@ class GenericAplication:
                 return lta['valr']                
         return None
 
-    def __findNextvertice(self, objDijktra):
-        print(objDijktra)        
+    def __findNextvertice(self, objDijktra):            
         objDijktra = sorted(objDijktra, key=lambda k: k['custo'], reverse=False)
         
         for obj in objDijktra:# Como ele vai estar ordenado o primeiro que nao estiver visitado e nao for infinito ou none ele ja me retorno o proximo
             if obj['custo'] != "" and obj['visitado'] == False:
-                return obj['vertice']
+                return obj['vertice'].strip()
         return None
 
     
@@ -46,7 +45,13 @@ class GenericAplication:
             if objDijktra[ind]['vertice'] == vupdate:
                 if objDijktra[ind]['custo'] == "" or objDijktra[ind]['custo'] > custofind:
                     objDijktra[ind]['custo'] = custofind 
-                objDijktra[ind]['vindo'] = vorigem
+                    objDijktra[ind]['vindo'] = vorigem
+
+    def __updateVisitados(self, objDijktra, vertice):
+        for ind in range(len(objDijktra)):
+            if objDijktra[ind]['vertice'] == vertice:
+                
+                objDijktra[ind]['visitado'] = True        
 
     def run(self):        
         print('\n')
@@ -131,23 +136,28 @@ class GenericAplication:
                         })
                     # Perrcorre para ver se o vertice existe
                     idc = 0     
-                    vnextvertice = None                    
-                    for ver in objDijktra:
-                        objViz = []
-                        
-                        if ver['vertice'] == vorigem:
-                            objDijktra[idc]['visitado'] = True # Indica que ja for visitado e procuramos o conjunto vizinhaza dele    
-                            objViz = self.__getVizinhaza(listaresta, vorigem) # procua os conjuntos vizinhanza
-                            self.__orderBy(objViz)    
+                    vnextvertice = None
 
-                            for ind in range(len(objViz)):                                                                      
-                                custofind = self.__findCusto(vorigem, objViz[ind], listaresta)
-                                self.__updateobjDijktra(objDijktra, custofind, vorigem, objViz[ind])
-                            
-                            vorigem = self.__findNextvertice(objDijktra)
-                            print(vorigem)
-                        idc += 1
-                    print(objDijktra)                  
+                    while True:                        
+                        objViz = []                                                                                  
+                        self.__updateVisitados(objDijktra, vorigem)# Indica que ja for visitado e procuramos o conjunto vizinhaza dele    
+
+                        objViz = self.__getVizinhaza(listaresta, vorigem) # procura os conjuntos vizinhanza
+                        self.__orderBy(objViz)   
+                        # print('Conjunto vizinhanza de estos objetos'+str(objViz))
+
+                        for ind in range(len(objViz)):  
+                            custofind = self.__findCusto(vorigem, objViz[ind], listaresta)
+                            print("Custo que achou",custofind, objViz[ind], vorigem)                                                                    
+                            self.__updateobjDijktra(objDijktra, custofind, vorigem, objViz[ind])
+                        
+                        # print('vertice Atual---------------------'+vorigem)                        
+                        vorigem = self.__findNextvertice(objDijktra)                                               
+                        # print('Proximo vertice---------------------'+vorigem)                                             
+
+                        if vorigem == vdestino:
+                            break
+                    print(objDijktra)
                 else:
                     print("Opção invalido !")
 
