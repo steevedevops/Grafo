@@ -38,7 +38,6 @@ class GenericAplication:
             if obj['custo'] != "" and obj['visitado'] == False:
                 return obj['vertice'].strip()
         return None
-
     
     def __updateobjDijktra(self, objDijktra, custofind,  vorigem, vupdate):
         custoatual = 0
@@ -49,9 +48,7 @@ class GenericAplication:
         for ind in range(len(objDijktra)):
             if objDijktra[ind]['vertice'] == vupdate:
                 custoatual = str(int(custoatual) + int(custofind))
-
-                print('Calculo do custo atual', custoatual)
-
+                # print('Calculo do custo atual', custoatual)
                 if objDijktra[ind]['custo'] == "" or custoatual < objDijktra[ind]['custo']:
                     objDijktra[ind]['custo'] = custoatual 
                     objDijktra[ind]['vindo'] = vorigem
@@ -61,6 +58,18 @@ class GenericAplication:
             if objDijktra[ind]['vertice'] == vertice:
                 
                 objDijktra[ind]['visitado'] = True        
+
+    def __showVertdisp(self, object):
+        vdp = " "
+        for i in range(int(object[0])):
+            indice = i+1                        
+            vdp = vdp+"   "+object[indice].strip()
+
+        print('\n')                    
+        print('======================VERTICES DISPONIVEIS===================')                    
+        print(vdp)
+        print('=============================================================')
+        print('\n')
 
     def run(self):        
         print('\n')
@@ -80,11 +89,25 @@ class GenericAplication:
                 print("Fim do programa.")
                 break
             else:
-                # nomearquivo = input('Informe o nome do arquivo :')
-                # fileData = open(nomearquivo+'.txt', 'r')                                
-                fileData = open('data.txt', 'r')
-                lines  = fileData.readlines()
-                if entrada == 'L' or entrada == 'l':                
+                if entrada == 'L' or entrada == 'l':                    
+                    nomearquivo = input('Informe o nome do arquivo :')
+                    lines = ""
+                    try:
+                        fileData = open(nomearquivo+'.txt', 'r')
+                        print('\n')
+                        print('===============ALERT !================')
+                        print('|  Leitura realizado com successo !  |')
+                        print('======================================')
+                        print('\n')
+                        # fileData = open('data.txt', 'r')
+                        lines  = fileData.readlines()
+                    except:
+                        print('\n')
+                        print('======================ERRO !======================')
+                        print('|  Não foi posivel fazer a leitura do arquivo    |')
+                        print('==================================================')
+                        print('\n')
+
                     counter = 1
                     linhas = len(lines)
                     qtdVertice = None
@@ -100,14 +123,15 @@ class GenericAplication:
                                 "valr" : l.split()[3]
                             })                       
                         counter += 1
-                elif entrada == 'V' or entrada == 'v':
+                elif entrada == 'V' or entrada == 'v':                    
+                    self.__showVertdisp(lines)
                     inVertice = input('Informe o vertice para ver sua Vizinhança: ')                              
                     objVizinhos = self.__getVizinhaza(listaresta, inVertice)
                     if len(objVizinhos)>0:
                         print('\n')
                         print('Conjunto vininhança de ',inVertice)
                         for vz in objVizinhos:
-                            print('======> ',vz)
+                            print('=======> ',vz)
                         print('\n')
                 elif entrada == 'S' or entrada == 's':          
                     objGraus = []
@@ -125,6 +149,7 @@ class GenericAplication:
                         print('\n')
 
                 elif entrada == 'D' or entrada == 'd':
+                    self.__showVertdisp(lines)
                     objDijktra = []
                     vorigem = input('Informa o vertice de origem: ')
                     vdestino = input('Informar o vertice de destino: ')
@@ -143,41 +168,42 @@ class GenericAplication:
                             "custo": "",
                             "vindo": ""
                         })
-                    # Perrcorre para ver se o vertice existe
-                    idc = 0     
+                    # Perrcorre para ver se o vertice existe                    
                     vnextvertice = None
-
                     while True:                        
                         objViz = []                                                                                  
                         self.__updateVisitados(objDijktra, vorigem)# Indica que ja for visitado e procuramos o conjunto vizinhaza dele    
 
                         objViz = self.__getVizinhaza(listaresta, vorigem) # procura os conjuntos vizinhanza
-                        self.__orderBy(objViz)   
-                        # print('Conjunto vizinhanza de estos objetos'+str(objViz))
-
+                        self.__orderBy(objViz) # Ordena o obj vizinhanza                
                         for ind in range(len(objViz)):                            
                             custofind = self.__findCusto(vorigem, objViz[ind], listaresta)
-                            print("Custo que achou",custofind, objViz[ind], vorigem)                                                                    
+                            # print("Custo que achou",custofind, objViz[ind], vorigem)                                                                    
                             self.__updateobjDijktra(objDijktra, custofind, vorigem, objViz[ind])
-                        
-                        # print('vertice Atual---------------------'+vorigem)                        
+                                                               
                         vorigem = self.__findNextvertice(objDijktra)                                               
-                        # print('Proximo vertice---------------------'+vorigem)                                             
-
+                    
                         if vorigem == vdestino:
-                            break   
+                            break                       
 
-                        idc += 1   
-
-
-                    for i in range(len(objDijktra)):
-                        print(i)
+                    for i in range(len(objDijktra)):                        
                         if objDijktra[i]['vertice'] == vinicial:
-                            objDijktra[i]['custo'] = 0
+                            objDijktra[i]['custo'] = "0"
 
-                    print(objDijktra)
-                else:
-                    print("Opção invalido !")
+
+
+                    print('====================================================================')
+                    print(repr("Visitado").rjust(15)+' '+repr("Vertice").rjust(15)+' '+repr("Custo").rjust(15)+' '+repr("Vindo").rjust(15))
+                    print('====================================================================')
+                    for obj in objDijktra:
+                        print(repr(obj['visitado']).rjust(15)+' '+repr(obj['vertice']).rjust(15)+' '+repr(obj['custo']).rjust(15)+' '+repr(obj['vindo']).rjust(15))
+                    print('====================================================================')
+                else:                    
+                    print('\n')                    
+                    print('======================ERRO !======================')
+                    print('|                Opção invalido !                |')
+                    print('==================================================')
+                    print('\n')
 
 
 if __name__=='__main__':
