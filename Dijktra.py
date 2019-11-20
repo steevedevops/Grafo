@@ -128,7 +128,7 @@ class GenericAplication:
                     objDijktra = []
                     vorigem = input('Informa o vertice de origem: ')
                     vdestino = input('Informar o vertice de destino: ')
-
+                    vinicial = vorigem 
                     # 1 acha ele no vertice
                     # 2 coloca ele como visitado verdadeiro 
                     # 3 Acha as vizinhanza dele
@@ -155,7 +155,7 @@ class GenericAplication:
                         self.__orderBy(objViz)   
                         # print('Conjunto vizinhanza de estos objetos'+str(objViz))
 
-                        for ind in range(len(objViz)):  
+                        for ind in range(len(objViz)):                            
                             custofind = self.__findCusto(vorigem, objViz[ind], listaresta)
                             print("Custo que achou",custofind, objViz[ind], vorigem)                                                                    
                             self.__updateobjDijktra(objDijktra, custofind, vorigem, objViz[ind])
@@ -165,7 +165,15 @@ class GenericAplication:
                         # print('Proximo vertice---------------------'+vorigem)                                             
 
                         if vorigem == vdestino:
-                            break                        
+                            break   
+
+                        idc += 1   
+
+
+                    for i in range(len(objDijktra)):
+                        print(i)
+                        if objDijktra[i]['vertice'] == vinicial:
+                            objDijktra[i]['custo'] = 0
 
                     print(objDijktra)
                 else:
