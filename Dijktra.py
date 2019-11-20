@@ -40,11 +40,20 @@ class GenericAplication:
         return None
 
     
-    def __updateobjDijktra(self, objDijktra, custofind,  vorigem, vupdate):        
+    def __updateobjDijktra(self, objDijktra, custofind,  vorigem, vupdate):
+        custoatual = 0
+        for ina in range(len(objDijktra)):
+            if objDijktra[ina]['vertice'] == vorigem:
+                custoatual = objDijktra[ina]['custo'] if objDijktra[ina]['custo'] != "" else 0
+
         for ind in range(len(objDijktra)):
             if objDijktra[ind]['vertice'] == vupdate:
-                if objDijktra[ind]['custo'] == "" or objDijktra[ind]['custo'] > custofind:
-                    objDijktra[ind]['custo'] = custofind 
+                custoatual = str(int(custoatual) + int(custofind))
+
+                print('Calculo do custo atual', custoatual)
+
+                if objDijktra[ind]['custo'] == "" or custoatual < objDijktra[ind]['custo']:
+                    objDijktra[ind]['custo'] = custoatual 
                     objDijktra[ind]['vindo'] = vorigem
 
     def __updateVisitados(self, objDijktra, vertice):
@@ -156,7 +165,8 @@ class GenericAplication:
                         # print('Proximo vertice---------------------'+vorigem)                                             
 
                         if vorigem == vdestino:
-                            break
+                            break                        
+
                     print(objDijktra)
                 else:
                     print("Opção invalido !")
