@@ -186,17 +186,22 @@ class GenericAplication:
                         if vorigem == vdestino:
                             break                       
 
-                    for i in range(len(objDijktra)):                        
+                    objectordem = [] # Crio un objeto que va almazenar os custos que eu tive apos de fazer o calculo dijktra
+                    for i in range(len(objDijktra)):
+                        objectordem.append(objDijktra[i]['custo']) # Almazena os custo de cada vertice
                         if objDijktra[i]['vertice'] == vinicial:
                             objDijktra[i]['custo'] = "0"
 
-
+                    # Ordena os custos de menor a maior e o primeiro sempre vai ser o manor entao e so pegar o indice 0 do vertice
+                    objectordem = sorted(objectordem, key=lambda k: k, reverse=False)                    
 
                     print('====================================================================')
                     print(repr("Visitado").rjust(15)+' '+repr("Vertice").rjust(15)+' '+repr("Custo").rjust(15)+' '+repr("Vindo").rjust(15))
                     print('====================================================================')
                     for obj in objDijktra:
                         print(repr(obj['visitado']).rjust(15)+' '+repr(obj['vertice']).rjust(15)+' '+repr(obj['custo']).rjust(15)+' '+repr(obj['vindo']).rjust(15))
+                    print('====================================================================')
+                    print(' Menor Caminho Encontrado e: '+objectordem[0]) # Pega o indice 0 da ordenação que ele fez
                     print('====================================================================')
                 else:                    
                     print('\n')                    
