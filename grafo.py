@@ -123,15 +123,15 @@ class GenericAplication:
 
     def run(self):
         print('\n')
-        print('              WELCOM TO DIJKTRA APLICATION            ')
+        print('                WELCOM TO GRAFO APP                  ')
         print('=====================================================')
         print('|                       MENU                        |')
         print('=====================================================')
-        print('|                   L - LEITURA                     |')
-        print('|                   V - VIZINHANÇA                  |')
-        print('|                   S – SEQUÊNCIA DE GRAUS          |')
-        print('|                   D – DIJKSTRA                    |')
-        print('|                   F – FIM                         |')
+        print('|               [ L ] - LEITURA                     |')
+        print('|               [ V ] - VIZINHANÇA                  |')
+        print('|               [ S ] - SEQUÊNCIA DE GRAUS          |')
+        print('|               [ D ] - DIJKSTRA                    |')
+        print('|               [ F ] - FIM                         |')
         print('=====================================================')
         while True:
             entrada = input('Selecione uma opção: ')
@@ -269,7 +269,7 @@ class GenericAplication:
 
                         # Verifica se existe relacao entre todos os vertices existente no grafo
                         else:
-                            self.__showError('Vertice '+vorigem+' y '+vdestino+'Não ten Custo')
+                            self.__showError('Vertice '+vorigem+' y '+vdestino+' Não ten Custo')
                     else:
                         self.__showError('Vertice Origem não pode estar vazío')
                 else:
