@@ -4,7 +4,7 @@ __version__ = '1.0.0'
 
 class GenericAplication:
 
-    def __getVizinhaza(self, listaresta, inVertice):
+    def __getVizinhaza(self, listaresta, inVertice):        
         objVizinhos = []
         for la in listaresta:
             if la['orig'] == inVertice:
@@ -12,6 +12,23 @@ class GenericAplication:
             elif la['dest'] == inVertice:
                 objVizinhos.append(la['orig'])
         return objVizinhos
+
+    def __getVizinhazaNaoVisitado(self, listaresta, inVertice, objDijktra):        
+        objVizinhos = []        
+        for la in listaresta:
+            if la['orig'] == inVertice:
+                objVizinhos.append(la['dest'])
+            elif la['dest'] == inVertice:
+                objVizinhos.append(la['orig'])
+
+        objectnovisitado = []
+        if len(objVizinhos) > 0:                    
+            for i in range(len(objVizinhos)):                
+                for od in objDijktra:
+                    if od['vertice'] == objVizinhos[i] and od['visitado'] == False:                                        
+                        objectnovisitado.append(objVizinhos[i])
+
+        return objectnovisitado
 
     def __orderBy(self, obj):
         # Insertion Sort para ordenar o objeto
@@ -33,7 +50,12 @@ class GenericAplication:
 
     def __findNextvertice(self, objDijktra):
         objDijktra = sorted(objDijktra, key=lambda k: k['custo'], reverse=False)
-
+        # print('====================================================================')
+        # print(repr("Visitado").rjust(15)+' '+repr("Vertice").rjust(15)+' '+repr("Custo").rjust(15)+' '+repr("Vindo").rjust(15))
+        # print('====================================================================')
+        # for obj in objDijktra:
+        #     print(repr(obj['visitado']).rjust(15)+' '+repr(obj['vertice']).rjust(15)+' '+repr(obj['custo']).rjust(15)+' '+repr(obj['vindo']).rjust(15))
+        # print('====================================================================')
         for obj in objDijktra:# Como ele vai estar ordenado o primeiro que nao estiver visitado e nao for infinito ou none ele ja me retorno o proximo
             if obj['custo'] != "" and obj['visitado'] == False:
                 return obj['vertice'].strip()
@@ -45,19 +67,23 @@ class GenericAplication:
         for ina in range(len(objDijktra)):
             if objDijktra[ina]['vertice'] == vorigem:
                 custoatual = objDijktra[ina]['custo'] if objDijktra[ina]['custo'] != "" else 0
+            
 
         for ind in range(len(objDijktra)):
             if objDijktra[ind]['vertice'] == vupdate:
                 custoatual = str(int(custoatual) + int(custofind))
                 # print('Calculo do custo atual', custoatual)
-                if objDijktra[ind]['custo'] == "" or custoatual < objDijktra[ind]['custo']:
+                if objDijktra[ind]['custo'] == "" or int(custoatual) < int(objDijktra[ind]['custo']):
                     objDijktra[ind]['custo'] = custoatual # ATUALIZO O VALOR OU CUSTO ATUAL AQUI
-                    objDijktra[ind]['vindo'] = vorigem # COLOCO O VINDO DE AQUI 
+                    objDijktra[ind]['vindo'] = vorigem # COLOCO O VINDO DE AQUI             
+                return
 
-    def __updateVisitados(self, objDijktra, vertice):
+    def __updateVisitados(self, objDijktra, vertice, inicusto):
         for ind in range(len(objDijktra)):
             if objDijktra[ind]['vertice'] == vertice:
-                objDijktra[ind]['visitado'] = True
+                objDijktra[ind]['visitado'] = True  
+                if inicusto == 0:
+                    objDijktra[ind]['custo'] = "0" # inicializa com o custo 0 
 
     def __showVertdisp(self, object):
         vdp = " "
@@ -86,10 +112,10 @@ class GenericAplication:
         varAchouOrigem = False
         varAchouDestino = False
         for lta in listaresta:
-            if lta['orig'] == vertorigem or lta['dest'] == vertorigem:
+            if lta['orig'] == vertorigem or lta['dest'] == vertorigem:                
                 varAchouOrigem = True
 
-            elif lta['orig'] == vertdestino or lta['dest'] == vertdestino or vertdestino == "":
+            if lta['orig'] == vertdestino or lta['dest'] == vertdestino or vertdestino == "":                            
                 varAchouDestino = True
 
 
@@ -179,7 +205,8 @@ class GenericAplication:
                     vdestino = input('Informar o vertice de destino: ')
                     vinicial = vorigem
                     # Monta a tabela inicial para o algoritmo dijtra
-                    if vorigem != "":
+                    print(self.__findRelacao(vorigem, vdestino, listaresta))
+                    if vorigem != "":                        
                         if self.__findRelacao(vorigem, vdestino, listaresta)['varAchouOrigem'] and self.__findRelacao(vorigem, vdestino, listaresta)['varAchouDestino']:
                             print('Teste funcionado')
                             for i in range(int(lines[0])):
@@ -193,20 +220,27 @@ class GenericAplication:
                                 })
                             # Perrcorre para ver se o vertice existe
                             vnextvertice = None
+                            idc = 0
                             while True:
-                                objViz = []
-                                self.__updateVisitados(objDijktra, vorigem)# Indica que ja for visitado e procuramos o conjunto vizinhaza dele
-                                objViz = self.__getVizinhaza(listaresta, vorigem) # procura os conjuntos vizinhanza do vertice
+                                objViz = []                                                            
+                                self.__updateVisitados(objDijktra, vorigem, idc)# Indica que ja for visitado e procuramos o conjunto vizinhaza dele
+                                
+                                if vorigem == vdestino: # Si o laco percorrido chego ao destino entao para de fazer as atualizacoes na tabela e finaliza o laço
+                                    break
+                                
+                                objViz = self.__getVizinhazaNaoVisitado(listaresta, vorigem, objDijktra) # procura os conjuntos vizinhanza do vertice
                                 self.__orderBy(objViz) # Ordena o obj vizinhanza de menor a maior
-
+                                print('Vizinha',objViz)
                                 for ind in range(len(objViz)): # percorre as vizinhanzas encontrado e acha o custo dele e faz a atualização da para a tabela dijtra
                                     custofind = self.__findCusto(vorigem, objViz[ind], listaresta) # procura os custos
                                     self.__updateobjDijktra(objDijktra, custofind, vorigem, objViz[ind]) # Atualiza a tabela dijtra
 
-                                vorigem = self.__findNextvertice(objDijktra) # Acha o proximo vertice
 
-                                if vorigem == vdestino: # Si o laco percorrido chego ao destino entao para de fazer as atualizacoes na tabela e finaliza o laço
-                                    break
+                                vorigem = self.__findNextvertice(objDijktra) # Acha o proximo vertice
+                                print('Next ------------',vorigem)
+
+                                idc += 1
+
 
                             objectordem = [] # Crio un objeto que va almazenar os custos que eu tive apos de fazer o calculo dijktra
                             for i in range(len(objDijktra)):
