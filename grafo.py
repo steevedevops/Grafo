@@ -39,6 +39,7 @@ class GenericAplication:
                 return obj['vertice'].strip()
         return None
 
+    # funcao que faz o trabalho do distra para atualizar a tabela e tal.
     def __updateobjDijktra(self, objDijktra, custofind,  vorigem, vupdate):
         custoatual = 0
         for ina in range(len(objDijktra)):
@@ -50,13 +51,12 @@ class GenericAplication:
                 custoatual = str(int(custoatual) + int(custofind))
                 # print('Calculo do custo atual', custoatual)
                 if objDijktra[ind]['custo'] == "" or custoatual < objDijktra[ind]['custo']:
-                    objDijktra[ind]['custo'] = custoatual
-                    objDijktra[ind]['vindo'] = vorigem
+                    objDijktra[ind]['custo'] = custoatual # ATUALIZO O VALOR OU CUSTO ATUAL AQUI
+                    objDijktra[ind]['vindo'] = vorigem # COLOCO O VINDO DE AQUI 
 
     def __updateVisitados(self, objDijktra, vertice):
         for ind in range(len(objDijktra)):
             if objDijktra[ind]['vertice'] == vertice:
-
                 objDijktra[ind]['visitado'] = True
 
     def __showVertdisp(self, object):
