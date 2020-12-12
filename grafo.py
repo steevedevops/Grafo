@@ -1,5 +1,5 @@
 # coding: UTF-8
-__authors__ = 'Steeve Bernard(176896) - Jean F. Giareta(172959) - Gabriel Belloni(172951)'
+__authors__ = 'Steeve Bernard(176896)'
 __version__ = '1.0.0'
 
 class GenericAplication:
